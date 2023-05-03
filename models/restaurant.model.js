@@ -17,10 +17,14 @@ exports.addRestaurants = (newRestaurant) => {
         RETURNING *;`,
     formattedRestaurants(newRestaurant)
   );
-
-  return db.query(itemsInsrtStr).then((result) => {
-    return result.rows[0];
-  });
+  return db
+    .query(itemsInsrtStr)
+    .then((result) => {
+      return result.rows[0];
+    })
+    .catch((err) => {
+      return err;
+    });
 };
 
 exports.removeRestaurant = (id) => {

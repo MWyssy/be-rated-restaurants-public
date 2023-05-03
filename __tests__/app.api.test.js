@@ -65,6 +65,54 @@ describe("POST /api/restaurants", () => {
         expect(body.restaurants.length).toBe(9);
       });
   });
+  test("POST - status: 400 - invalid request format", () => {
+    const badRestaurant = `
+        restaurant_name: "The Codfather",
+        area_id: 2,
+        cuisine: "British",
+        website: "www.thecodfather.com",
+      `;
+    return request(app)
+      .post("/api/restaurants")
+      .send(badRestaurant)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid request format");
+      });
+  });
+  test("POST - status: 400 - incomplete/invalid request ", () => {
+    const badRestaurant = [
+      {
+        area_id: 2,
+        cuisine: "British",
+        website: "www.thecodfather.com",
+      },
+    ];
+    return request(app)
+      .post("/api/restaurants")
+      .send(badRestaurant)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incomplete/invalid request");
+      });
+  });
+  test("POST - status: 400 - invalid key/value format ", () => {
+    const badRestaurant = [
+      {
+        restaurant_name: null,
+        area_id: true,
+        cuisine: "British",
+        website: "www.thecodfather.com",
+      },
+    ];
+    return request(app)
+      .post("/api/restaurants")
+      .send(badRestaurant)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid key/value format");
+      });
+  });
 });
 
 describe("DELETE /api/restaurants", () => {

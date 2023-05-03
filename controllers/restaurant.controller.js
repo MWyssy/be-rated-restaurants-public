@@ -10,14 +10,16 @@ exports.getRestaurants = (req, res) => {
   });
 };
 
-exports.postRestaurant = (req, res) => {
+exports.postRestaurant = (req, res, next) => {
   addRestaurants(req.body)
     .then((result) => {
-      res.status(201).send({ restaurant: result });
+      if (result.hasOwnProperty("code")) {
+        next(result);
+      } else {
+        res.status(201).send({ restaurant: result });
+      }
     })
-    .catch((err) => {
-      throw new Error(err);
-    });
+    .catch(next);
 };
 
 exports.deleteRestaurant = (req, res) => {
